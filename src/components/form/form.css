@@ -1,0 +1,14 @@
+.myForm .badgePaper{
+    width: fit-content;
+    padding: 0.2em;
+    display: flex;
+    align-items: center;
+}
+
+.myForm .badgeSection{
+    display: flex;
+}
+
+.myForm .badgeBlock{
+    margin: 0.4em;
+}
