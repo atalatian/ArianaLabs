@@ -5,7 +5,6 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import CancelIcon from '@mui/icons-material/Cancel';
 import Paper from '@mui/material/Paper';
-import './form.css';
 import getById from "../../services/getById";
 import removeDuplicate from "../../services/removeDuplicate";
 import createNewState from "../../services/createNewState";
@@ -15,7 +14,7 @@ import filterById from "../../services/filterById";
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Typography from "@mui/material/Typography";
-import { blue } from '@mui/material/colors';
+import {Alert} from "@mui/material";
 
 const skills = [
     {id: 0, name: 'html', label: 'HTML'},
@@ -28,13 +27,16 @@ export default function MultipleSelect(props) {
 
     const handleChange = (e) => {
         setValue(e.target.value);
+    };
+
+    const handleTagAddition = (skillId) => {
         let tags = [...props.states.selectedSkills]
-        tags.push(getById(skills, e.target.value));
+        tags.push(getById(skills, skillId));
         tags = removeDuplicate(tags);
         const newStates = createNewState(props.states);
         newStates.selectedSkills = tags;
         props.setStates(newStates);
-    };
+    }
 
     const handleDeleteTag = (tagID) => {
         let tags = [...props.states.selectedSkills]
@@ -58,12 +60,13 @@ export default function MultipleSelect(props) {
                 >
                     {
                         skills.map((skill)=>{
-                            return(<MenuItem key={skill.id} value={skill.id}>{skill.label}</MenuItem>);
+                            return(<MenuItem onClick={()=>handleTagAddition(skill.id)}
+                                             key={skill.id} value={skill.id}>{skill.label}</MenuItem>);
                         })
                     }
                 </Select>
             </FormControl>
-            <div className={`badgeSection`}>
+            <div>
                 {
                     props.states.selectedSkills.map((selectedSkill)=>{
                         return(
@@ -90,7 +93,7 @@ export default function MultipleSelect(props) {
                 {
                     props.input.submit.type.map((massage)=>{
                         return(
-                            <p>{massages[massage]}</p>
+                            <Alert severity="error">{massages[massage]}</Alert>
                         )
                     })
                 }

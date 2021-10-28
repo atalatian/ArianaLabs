@@ -4,6 +4,7 @@ import massages from "./validation/massages";
 import createNewState from "../../services/createNewState";
 import Box from '@mui/material/Box';
 import Paper from "@mui/material/Paper";
+import {Alert} from "@mui/material";
 
 export default function TextInput(props){
 
@@ -31,7 +32,7 @@ export default function TextInput(props){
                 {
                     props.input.submit.type.map((massage)=>{
                         return(
-                            <p>{massages[massage]}</p>
+                            <Alert severity="error">{massages[massage]}</Alert>
                         )
                     })
                 }

@@ -60,7 +60,6 @@ export default function Form() {
             newInput.submit = result;
             return newInput;
         });
-
         setInputs(newInputs);
     }
 
