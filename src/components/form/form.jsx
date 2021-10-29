@@ -7,19 +7,31 @@ import MultipleSelect from "./multipleSelect";
 import multipleSelectValidation from "./validation/multipleSelectValidation";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
+import { useSelector, useDispatch } from 'react-redux';
+import createStates from "../../services/createStates";
+import {createTheme, ThemeProvider} from "@mui/material/styles";
+
+
+const edit = createTheme({
+    palette: {
+        primary: {
+            main: `#f0ad4e`,
+        }
+    }
+});
 
 export default function Form() {
 
-    const [states, setStates] = useState({
-        firstName: '',
-        lastName: '',
-        age: '',
-        selectedSkills: [],
-    });
+    const dispatch = useDispatch()
+    const skills = useSelector(state => state.skills);
+    const form = useSelector(state => state.form);
+
+    const [states, setStates] = useState({});
 
     const [inputs, setInputs] = useState([
         {
             id: 0,
+            defaultValue: '',
             name: 'firstName',
             label: 'First Name',
             type: 'text',
@@ -28,6 +40,7 @@ export default function Form() {
         },
         {
             id: 1,
+            defaultValue: '',
             name: 'lastName',
             label: 'Last Name',
             type: 'text',
@@ -36,6 +49,7 @@ export default function Form() {
         },
         {
             id: 2,
+            defaultValue: '',
             name: 'age',
             label: 'Age',
             type: 'number',
@@ -44,6 +58,7 @@ export default function Form() {
         },
         {
             id: 3,
+            defaultValue: [],
             name: 'selectedSkills',
             label: 'Skills',
             type: 'multipleSelect',
@@ -52,15 +67,52 @@ export default function Form() {
         },
     ])
 
+    useEffect(()=>{
+        setStates(createStates(inputs, form.defaultValue));
+    }, [inputs, form])
 
-    const handleSave = () => {
-        const newInputs = inputs.map((input, index)=>{
+    const isSuccessful = () => {
+        let valid = true;
+        const newInputs = inputs.map((input, )=>{
             const result = input.isValid(states[input.name]);
+            if (result.error){
+                valid = false;
+            }
             const newInput = createNewState(input);
             newInput.submit = result;
             return newInput;
         });
         setInputs(newInputs);
+
+        return valid;
+    }
+
+    const renderButtons = () => {
+        if (form.variant === 'create'){
+            return(
+                <Button variant="contained" onClick={handleSave}>Save</Button>
+            );
+        }else if (form.variant === 'edit'){
+            return (
+                <ThemeProvider theme={edit}>
+                    <Button variant="contained" onClick={handleFinish}>Finish</Button>
+                </ThemeProvider>
+            );
+        }
+    }
+
+    const handleFinish = () => {
+        if (isSuccessful()){
+            const id = form.defaultValue.id
+            dispatch({type: 'EDIT_USER', payload: {...states, id}})
+            dispatch({type: 'GO_CREATE'})
+        }
+    }
+
+    const handleSave = () => {
+        if (isSuccessful()){
+            dispatch({type: 'ADD_USER', payload: states})
+        }
     }
 
     const padding = 2;
@@ -80,7 +132,8 @@ export default function Form() {
                                 }else if (input.type === 'multipleSelect'){
                                     return(
                                         <MultipleSelect key={input.id} input={input}
-                                                        states={states} setStates={setStates} margin={padding}/>
+                                                        states={states} setStates={setStates}
+                                                        margin={padding} options={skills}/>
                                     )
                                 }else {
                                     return null;
@@ -88,11 +141,10 @@ export default function Form() {
                             })
                         }
                         <Box sx={{ p: padding, width: `20rem`, maxWidth: `100%` }}>
-                            <Button variant="contained" onClick={handleSave}>Save</Button>
+                            {renderButtons()}
                         </Box>
                     </Box>
                 </Paper>
-
             </Box>
         </React.Fragment>
     );

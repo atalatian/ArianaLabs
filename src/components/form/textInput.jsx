@@ -1,9 +1,8 @@
 import TextField from "@mui/material/TextField";
-import React from "react";
+import React, {useState} from "react";
 import massages from "./validation/massages";
 import createNewState from "../../services/createNewState";
 import Box from '@mui/material/Box';
-import Paper from "@mui/material/Paper";
 import {Alert} from "@mui/material";
 
 export default function TextInput(props){
@@ -18,6 +17,7 @@ export default function TextInput(props){
         <Box sx={{ p: props.margin, maxWidth: `100%`, width: `20rem` }}>
             <TextField
                 sx={{ width: `100%` }}
+                focused={true}
                 value={props.states[props.input.name]}
                 error={props.input.submit.error}
                 inputProps={{type: `${props.input.type}`}}

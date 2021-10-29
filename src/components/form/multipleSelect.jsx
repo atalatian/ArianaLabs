@@ -8,7 +8,6 @@ import Paper from '@mui/material/Paper';
 import getById from "../../services/getById";
 import removeDuplicate from "../../services/removeDuplicate";
 import createNewState from "../../services/createNewState";
-import Button from "@mui/material/Button";
 import massages from "./validation/massages";
 import filterById from "../../services/filterById";
 import Box from '@mui/material/Box';
@@ -16,11 +15,6 @@ import IconButton from '@mui/material/IconButton';
 import Typography from "@mui/material/Typography";
 import {Alert} from "@mui/material";
 
-const skills = [
-    {id: 0, name: 'html', label: 'HTML'},
-    {id: 1, name: 'css', label: 'CSS'},
-    {id: 2, name: 'javascript', label: 'Javascript'},
-]
 
 export default function MultipleSelect(props) {
     const [value, setValue] = React.useState();
@@ -31,7 +25,7 @@ export default function MultipleSelect(props) {
 
     const handleTagAddition = (skillId) => {
         let tags = [...props.states.selectedSkills]
-        tags.push(getById(skills, skillId));
+        tags.push(getById(props.options, skillId));
         tags = removeDuplicate(tags);
         const newStates = createNewState(props.states);
         newStates.selectedSkills = tags;
@@ -59,7 +53,7 @@ export default function MultipleSelect(props) {
                     onChange={handleChange}
                 >
                     {
-                        skills.map((skill)=>{
+                        props.options.map((skill)=>{
                             return(<MenuItem onClick={()=>handleTagAddition(skill.id)}
                                              key={skill.id} value={skill.id}>{skill.label}</MenuItem>);
                         })
@@ -68,11 +62,11 @@ export default function MultipleSelect(props) {
             </FormControl>
             <div>
                 {
-                    props.states.selectedSkills.map((selectedSkill)=>{
+                    (props.states.selectedSkills || []).map((selectedSkill)=>{
                         return(
-                            <Box sx={{ m: 1, display: `inline-block` }}>
+                            <Box sx={{ m: 1, display: `inline-block` }} key={selectedSkill.id}>
                                 <Paper sx={{ display: `flex`, alignItems: `center`,
-                                    backgroundColor: `#1565c0`}}>
+                                    backgroundColor: `#1565c0`, borderRadius: `24px`}}>
                                     <Typography sx={{ p: 1, m: 0 }} variant="subtitle2" color={`#fff`}
                                                 display="block" gutterBottom>
                                         {selectedSkill.label}

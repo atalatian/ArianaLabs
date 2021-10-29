@@ -6,32 +6,79 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Paper from "@mui/material/Paper";
-import { red } from '@mui/material/colors';
-
-const skills = [
-    {id: 0, name: 'html', label: 'HTML'},
-    {id: 1, name: 'css', label: 'CSS'},
-    {id: 2, name: 'javascript', label: 'Javascript'},
-]
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {useDispatch, useSelector} from 'react-redux';
+import getById from "../../services/getById";
+import {useEffect, useState} from "react";
 
 
-export default function BasicCard() {
+const edit = createTheme({
+    palette: {
+        primary: {
+            main: `#f0ad4e`,
+        }
+    }
+});
+
+const del = createTheme({
+    palette: {
+        primary: {
+            main: `#d9534f`,
+        }
+    }
+});
+
+export default function BasicCard(props) {
+
+    const dispatch = useDispatch();
+    const users = useSelector(state => state.users);
+    const form = useSelector(state => state.form);
+    const [border, setBorder] = useState({});
+
+    const handleDelete = (userId) => {
+        dispatch({type: 'DELETE_USER', payload: userId})
+    }
+
+    useEffect(()=>{
+        setBorder(props.border);
+    }, [props.borders])
+
+    const handleEdit = (userId) => {
+        const user = getById(users, userId);
+        dispatch({type: 'GO_EDIT', payload: user});
+        const borders = props.borders.map((border)=>{
+            border.border = border.id === userId;
+            return border;
+        });
+        props.setBorders(borders);
+    }
+
+    const handleBorder = () => {
+        if (border){
+            if (border.border){
+                return '5px #f0ad4e solid'
+            }else {
+                return ''
+            }
+        }
+    }
+
     return (
-        <Card elevation={10} sx={{ maxWidth: 275, m: 3 }}>
+        <Card elevation={10} sx={{ border: `${handleBorder()}` }}>
             <CardContent>
                 <Typography variant="h5" component="div">
-                    Amir Hossein Talatian
+                    {`${props.user.firstName} ${props.user.lastName}`}
                 </Typography>
                 <Typography variant="subtitle1" gutterBottom component="div">
-                    Age: 20
+                    Age: {`${props.user.age}`}
                 </Typography>
                 <Typography variant="subtitle1" gutterBottom component="div">
                     Skills: {
-                    skills.map((skill)=>{
+                    props.user.selectedSkills.map((skill)=>{
                         return(
                             <Box sx={{ m: 1, display: `inline-block` }}>
                                 <Paper sx={{ display: `flex`, alignItems: `center`,
-                                    backgroundColor: `#1565c0`}}>
+                                    backgroundColor: `#1565c0`, borderRadius: `24px`}}>
                                     <Typography sx={{ p: 1, m: 0 }} variant="subtitle2" color={`#fff`}
                                                 display="block" gutterBottom>
                                         {skill.label}
@@ -43,10 +90,14 @@ export default function BasicCard() {
                 }
                 </Typography>
                 <CardActions>
-                    <Button sx={{ backgroundColor: `#f0ad4e` }}
-                            variant={'contained'} size="small">Edit</Button>
-                    <Button sx={{ backgroundColor: `#d9534f` }}
-                            variant={'contained'} size="small">Delete</Button>
+                    <ThemeProvider theme={edit}>
+                        <Button onClick={()=> handleEdit(props.user.id)}
+                                variant={'contained'} size="small">Edit</Button>
+                    </ThemeProvider>
+                    <ThemeProvider theme={del}>
+                        <Button onClick={()=> handleDelete(props.user.id)}
+                                variant={'contained'} size="small">Delete</Button>
+                    </ThemeProvider>
                 </CardActions>
             </CardContent>
         </Card>
