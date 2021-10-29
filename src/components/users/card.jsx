@@ -32,7 +32,6 @@ export default function BasicCard(props) {
 
     const dispatch = useDispatch();
     const users = useSelector(state => state.users);
-    const form = useSelector(state => state.form);
     const [border, setBorder] = useState({});
 
     const handleDelete = (userId) => {
@@ -41,7 +40,7 @@ export default function BasicCard(props) {
 
     useEffect(()=>{
         setBorder(props.border);
-    }, [props.borders])
+    }, [props.borders, props.border])
 
     const handleEdit = (userId) => {
         const user = getById(users, userId);

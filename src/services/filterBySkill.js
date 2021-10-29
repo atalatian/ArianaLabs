@@ -6,6 +6,7 @@ const filterBySkill = (users , skill) => {
             if (skill.name === selectedSkill.name){
                 pass = true;
             }
+            return 0;
         })
 
         return pass;
