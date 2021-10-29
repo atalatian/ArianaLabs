@@ -13,6 +13,7 @@ const usersReducer = (state = getUsersFromLocalStorage(), action) => {
         localStorage.setItem('users', JSON.stringify(newState));
         return newState;
     }else if (action.type === 'DELETE_USER'){
+        console.log(state);
         let newState = createNewState(state);
         newState = filterById(newState, action.payload);
         localStorage.setItem('users', JSON.stringify(newState));

@@ -10,8 +10,16 @@ import Chart from "./components/chart/chart";
 import Container from '@mui/material/Container';
 import Box from "@mui/material/Box";
 import Navbar from "./components/navbar";
+import {useEffect} from "react";
 
 function App() {
+
+    useEffect(()=>{
+        //localStorage.removeItem('users');
+        //localStorage.removeItem('id');
+    }, [])
+
+
     return (
         <Router>
             <Switch>
